@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import models.Arquivo;
@@ -51,6 +54,63 @@ public class VeiculoDao {
         System.out.println("Insert dao");
         System.out.println(statement);
         statement.execute();
+    }
+    
+    public Veiculo buscaPorId(int id) throws SQLException {
+        // SQL: SELECT * FROM PRODUTOS
+        String sql = "SELECT * FROM VEICULO "
+                + " WHERE ID = ? ";
+
+        PreparedStatement statement = conexao.prepareStatement(sql);
+        statement.setLong(1, id);
+
+        ResultSet result = statement.executeQuery();
+        if (result.first()) {
+            Veiculo anunc = getAnuncioByResultSet(result);
+            return anunc;
+        }
+
+        return null;
+    }
+
+    public List<Veiculo> buscaTodos() throws SQLException {
+        try {
+            String sql = "SELECT * FROM VEICULO";
+
+            PreparedStatement statement = conexao.prepareStatement(sql);
+
+            List<Veiculo> anuncios = new ArrayList<>();
+
+            ResultSet result = statement.executeQuery();
+            if (result.first()) {
+                do {
+                    Veiculo anunc = getAnuncioByResultSet(result);
+                    anuncios.add(anunc);
+                } while (result.next());
+            }
+            System.out.println("busca todos");
+            System.out.println(anuncios);
+            return anuncios;
+        } catch (Exception e) {
+            System.out.println("erro" + e);
+            return null;
+        }
+    }
+
+    public static Veiculo getAnuncioByResultSet(ResultSet result) throws SQLException {
+        Veiculo anunc = new Veiculo();
+        anunc.setIdAnuncio(result.getInt("ID"));
+        anunc.setTitulo(result.getString("TITULO"));
+        anunc.setAnoFabricacao(result.getInt("ANO_FABRICACAO"));
+        anunc.setAnoModelo(result.getInt("ANO_MODELO"));
+        anunc.setKilometragem(result.getInt("KILOMETRAGEM"));
+        anunc.setValor(result.getInt("VALOR"));
+        anunc.setCombustivel(result.getString("COMBUSTIVEL"));
+        anunc.setCategoria(result.getString("CATEGORIA"));
+        anunc.setImagem(result.getString("IMAGEM"));
+        anunc.setDescricao(result.getString("DESCRICAO"));
+        anunc.setDataCadastro(result.getDate("DATA_CADASTRO"));
+        return anunc;
     }
     
     public static Veiculo getProdutoByRequest(HttpServletRequest req) throws FileUploadException, IOException {

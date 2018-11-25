@@ -5,59 +5,50 @@
  */
 package servlets;
 
+import dao.VeiculoDao;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import models.Veiculo;
 
 /**
  *
  * @author Leonardo
  */
 public class HomeServlet extends HttpServlet {
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        
+        Connection conexao = (Connection) req.getAttribute("conexao");
+
+        VeiculoDao dao = new VeiculoDao(conexao);
+
+        List<Veiculo> veiculos = new ArrayList<>();
+        try {
+            veiculos = dao.buscaTodos();
+        } catch (Exception ex) {
+            System.out.println("erro");
+            req.setAttribute("mensagem-erro", "Não foi possível comunicar com o banco de dados.");
+        }
+
+        req.setAttribute("veiculos", veiculos);
+
         RequestDispatcher dispatcher
-                = request.getRequestDispatcher("/WEB-INF/paginas/home.jsp");
-        dispatcher.forward(request, response);
+                = req.getRequestDispatcher("/WEB-INF/paginas/home.jsp");
+        dispatcher.forward(req, resp);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

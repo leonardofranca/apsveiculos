@@ -13,6 +13,7 @@ import java.util.Objects;
  * @author Leonardo
  */
 public class Veiculo {
+    private Integer idAnuncio;
     private String titulo;
     private Integer anoFabricacao;
     private Integer anoModelo;
@@ -23,6 +24,16 @@ public class Veiculo {
     private String imagem;
     private String descricao;
     private Date dataCadastro;
+
+    public Integer getIdAnuncio() {
+        return idAnuncio;
+    }
+
+    public void setIdAnuncio(Integer idAnuncio) {
+        this.idAnuncio = idAnuncio;
+    }
+    
+    
 
     public Date getDataCadastro() {
         return dataCadastro;
